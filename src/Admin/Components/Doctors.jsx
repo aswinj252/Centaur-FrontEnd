@@ -32,6 +32,7 @@ function Doctors() {
             <h4 className="text-2xl">Hentoni Doe</h4>
             <span className="block text-sm text-gray-500">CEO-Founder</span>
           </div>
+          <button>dd</button>
         </div>
         <div className="space-y-4 text-center">
           <img

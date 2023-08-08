@@ -2,18 +2,24 @@ import axios from "../utils/axios"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
-function Login() {
+import { useDispatch } from "react-redux";
+import Cookies from 'js-cookie';
+
+import { accessToken, refreshToken } from "../../Redux/reducers/doctorSlice";
+function  Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
  
 const navigate= useNavigate()
+const dispatch = useDispatch()
+
 
 const handelSubmit=(e) =>{
   e.preventDefault();
   const body = JSON.stringify({ email, password });
   console.log(body);
 
-axios.post('/login',body,{ headers: { "Content-Type": "application/json" } }).then((response) =>{
+axios.post('/login',body,{ headers: { "Content-Type": "application/json" },withCredentials: true }).then((response) =>{
   console.log(response);
 if( response.data.status === true &&
   response.data.auth === true){
@@ -28,6 +34,18 @@ if( response.data.status === true &&
       theme: "colored",
     });
 
+    const accessToken = Cookies.get('access_token')
+    // Cookies.get('refresh_token');
+    console.log(accessToken);
+
+    // Dispatch actions to update Redux store with tokens
+    // dispatch(accessToken(response.data.accessToken));
+    // dispatch(refreshToken(response.data.refreshToken));
+   
+    // Example usage to access the tokens
+    
+
+  
     navigate("/doctor/home"); 
   }
   else if(  response.data.status === false &&

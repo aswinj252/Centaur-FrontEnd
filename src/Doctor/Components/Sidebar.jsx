@@ -36,7 +36,7 @@ function Sidebar() {
                   />
                 </svg>
                 <span className="flex-1 ml-3 text-left whitespace-nowrap">
-                  Appointmets
+                  Appointments
                 </span>
                 <svg
                   className="w-6 h-6"

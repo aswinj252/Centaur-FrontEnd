@@ -1,10 +1,25 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "../../utils/axios";
 
 export default function Sample({ onClose }) {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedStartingTime, setselectedStartingTime] = useState(null);
+  const [selectedEndingTime,setselectedEndingTime] = useState(null)
+  const [slots,setslots] = useState('')
+
+
+  const handleEndingTimeChange = (Etime) =>{
+    setselectedEndingTime(Etime)
+  }
+ 
+  const handleStartingTimeChange = (time) => {
+    setselectedStartingTime(time);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -12,7 +27,13 @@ export default function Sample({ onClose }) {
   };
 
   const handleSubmit = () => {
-    ////
+    console.log(slots,selectedEndingTime,selectedStartingTime,selectedDate);
+       const body = JSON.stringify({selectedStartingTime,selectedEndingTime,slots,selectedDate})
+       console.log(body);
+       axios.post('/addApponitment',body,{ headers: { "Content-Type": "application/json" } }).then((response)=>{
+        console.log(response);
+       })
+
     handleClose();
   };
 
@@ -61,15 +82,25 @@ export default function Sample({ onClose }) {
                                 htmlFor="fName"
                                 className="mb-3 block text-base font-medium text-[#07074D]"
                               >
-                                First Name
+                               Starting time 
                               </label>
-                              <input
+                              {/* <input
                                 type="text"
                                 name="fName"
                                 id="fName"
                                 placeholder="First Name"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                              />
+                              /> */}
+                               <DatePicker
+      selected={selectedStartingTime}
+      onChange={ handleStartingTimeChange}
+      showTimeSelect
+      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+
+      showTimeSelectOnly
+      timeIntervals={30}
+      dateFormat="h:mm aa"
+    />
                             </div>
                           </div>
                           <div className="w-full px-3 sm:w-1/2">
@@ -78,15 +109,24 @@ export default function Sample({ onClose }) {
                                 htmlFor="lName"
                                 className="mb-3 block text-base font-medium text-[#07074D]"
                               >
-                                Last Name
-                              </label>
-                              <input
+                              Ending time                              </label>
+                              {/* <input
                                 type="text"
                                 name="lName"
                                 id="lName"
                                 placeholder="Last Name"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                              />
+                              /> */}
+                               <DatePicker
+      selected={selectedEndingTime}
+      onChange={handleEndingTimeChange}
+      showTimeSelect
+      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+
+      showTimeSelectOnly
+      timeIntervals={30}
+      dateFormat="h:mm aa"
+    />
                             </div>
                           </div>
                         </div>
@@ -95,13 +135,14 @@ export default function Sample({ onClose }) {
                             htmlFor="guest"
                             className="mb-3 block text-base font-medium text-[#07074D]"
                           >
-                            How many guest are you bringing?
+                            No of slots
                           </label>
                           <input
                             type="number"
                             name="guest"
                             id="guest"
-                            placeholder={5}
+                            onChange={(e)=> setslots(e.target.value)}
+                            placeholder={"no of slots"}
                             min={0}
                             className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                           />
@@ -115,15 +156,21 @@ export default function Sample({ onClose }) {
                               >
                                 Date
                               </label>
-                              <input
+                              {/* <input
                                 type="date"
                                 name="date"
                                 id="date"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                              /> */}
+                              <DatePicker
+                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                selected={selectedDate}
+                                onChange={(date) => setSelectedDate(date)}
+                                minDate={new Date()}
                               />
                             </div>
                           </div>
-                          <div className="w-full px-3 sm:w-1/2">
+                          {/* <div className="w-full px-3 sm:w-1/2">
                             <div className="mb-5">
                               <label
                                 htmlFor="VideoTIme"
@@ -138,9 +185,9 @@ export default function Sample({ onClose }) {
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                               />
                             </div>
-                          </div>
+                          </div> */}
                         </div>
-                        <div className="mb-5">
+                        {/* <div className="mb-5">
                           <label className="mb-3 block text-base font-medium text-[#07074D]">
                             Are you coming to the event?
                           </label>
@@ -174,7 +221,7 @@ export default function Sample({ onClose }) {
                               </label>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <div>
                           <button
                             type="button"

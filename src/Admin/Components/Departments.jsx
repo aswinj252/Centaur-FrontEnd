@@ -1,9 +1,27 @@
-
+import AddDepartment from "./Modals/AddDepartment"
+import { useState } from "react"
 
 function Departments() {
-  return (
+	const [Modal,setModal] = useState(false)
+	const onClose = () =>{
+		setModal(false)
+	}
+
+   return (
     <div className="p-4 sm:ml-64">
     <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+	<button
+	onClick={() =>{
+		setModal(true)
+	}}
+    data-modal-target="authentication-modal"
+    data-modal-toggle="authentication-modal"
+    className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button"
+  >
+    Add Department
+  </button>
+	{Modal && <AddDepartment onClose ={onClose}/>}
     <section className="py-6 sm:py-12 dark:bg-gray-800 dark:text-gray-100">
 	<div className="container p-6 mx-auto space-y-8">
 		<div className="space-y-2 text-center">
