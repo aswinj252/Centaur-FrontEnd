@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import Cookies from 'js-cookie';
 
-import { accessToken, refreshToken } from "../../Redux/reducers/doctorSlice";
+import { accessToken} from "../../Redux/reducers/doctorSlice";
 function  Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,12 +34,12 @@ if( response.data.status === true &&
       theme: "colored",
     });
 
-    const accessToken = Cookies.get('access_token')
+    const accessTokenn = response.data.accessToken
     // Cookies.get('refresh_token');
-    console.log(accessToken);
+    console.log(accessTokenn);
 
     // Dispatch actions to update Redux store with tokens
-    // dispatch(accessToken(response.data.accessToken));
+     dispatch(accessToken(accessTokenn));
     // dispatch(refreshToken(response.data.refreshToken));
    
     // Example usage to access the tokens

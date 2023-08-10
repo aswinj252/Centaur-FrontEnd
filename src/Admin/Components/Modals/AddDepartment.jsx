@@ -1,6 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import axios from "../../utils/axios";
+import { toast } from "react-toastify";
 function AddDepartment({ onClose }) {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -26,6 +27,34 @@ function AddDepartment({ onClose }) {
      
     await axios.post('/addDepartment',formData, { headers: {'Content-Type': 'multipart/form-data'}}).then((response)=>{
         console.log(response);
+
+        if (response.data.response.status===true) {
+          toast.success( "new department added", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          
+        }
+        else{
+          toast.error( "Department already exist", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+  
+          });
+        }
+
     })
 
     handleClose();

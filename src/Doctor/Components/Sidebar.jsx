@@ -1,13 +1,42 @@
 import { NavLink } from "react-router-dom";
+import { useState,useEffect } from "react";
+import { useSelector } from "react-redux";
+ import {accessToken } from "../../Redux/reducers/doctorSlice";
 
 const navLinkStyle = ({ isActive }) => {
   return {
     fontWeight: isActive ? "bold" : "normal",
   };
 };
+
+
+
 function Sidebar() {
+  const [dropdown1Visible, setDropdown1Visible] = useState(false)
+  const [dropdown2Visible, setDropdown2Visible] = useState(false);
+  const [dropdown3Visible, setDropdown3Visible] = useState(false);
+
+  const token = useSelector(state => state.doctorToken.accessToken);
+ console.log(token,"token from redux");
+  useEffect(() => {
+    // Set initial dropdown visibility here
+    setDropdown1Visible(false);
+    setDropdown2Visible(false);
+    setDropdown3Visible(false);
+ 
+  }, []);
+  const toggleDropdown1 = () => {
+    setDropdown1Visible(!dropdown1Visible);
+  };
+  const toggleDropdown2 = () => {
+    setDropdown2Visible(!dropdown2Visible);
+  };
+
+  const toggleDropdown3 = () => {
+    setDropdown3Visible(!dropdown3Visible);
+  };
   return (
-    <>
+    
       <aside
         id="logo-sidebar"
         className="fixed top-0 left-0 z-40 w-64 h-full pt-20 transition-transform -translate-x-full bg-blue-100 border-r border-gray-200 sm:translate-x-0 md:translate-x-0 lg:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -17,6 +46,7 @@ function Sidebar() {
           <ul className="space-y-2 font-medium">
             <li>
               <button
+                onClick={toggleDropdown1}
                 type="button"
                 className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 aria-controls="dropdown-example"
@@ -51,7 +81,7 @@ function Sidebar() {
                   />
                 </svg>
               </button>
-              <ul id="dropdown-example" className="hidden py-2 space-y-2">
+              <ul id="dropdown-example" className={`${dropdown1Visible ? "" : "hidden"} py-2 space-y-2`}>
                 <li>
                   {/* <a
                 
@@ -81,6 +111,7 @@ function Sidebar() {
             <li>
               <button
                 type="button"
+                onClick={toggleDropdown2}
                 className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 aria-controls="dropdown-example1"
                 data-collapse-toggle="dropdown-example1"
@@ -116,7 +147,7 @@ function Sidebar() {
                   />
                 </svg>
               </button>
-              <ul id="dropdown-example1" className="hidden py-2 space-y-2">
+              <ul id="dropdown-example1" className={`${dropdown2Visible ? "" : "hidden"} py-2 space-y-2`}>
                 <li>
                   <NavLink
                     style={navLinkStyle}
@@ -141,6 +172,7 @@ function Sidebar() {
             <li>
               <button
                 type="button"
+                onClick={toggleDropdown3}
                 className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 aria-controls="dropdown-example12"
                 data-collapse-toggle="dropdown-example12"
@@ -151,7 +183,7 @@ function Sidebar() {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6"
+                  className="w-6 h-6"
                 >
                   <path
                     stroke-linecap="round"
@@ -176,7 +208,7 @@ function Sidebar() {
                   />
                 </svg>
               </button>
-              <ul id="dropdown-example12" className="hidden py-2 space-y-2">
+              <ul id="dropdown-example12"className={`${dropdown3Visible ? "" : "hidden"} py-2 space-y-2`}>
                 <li>
                   <NavLink
                     style={navLinkStyle}
@@ -226,7 +258,7 @@ function Sidebar() {
           </ul>
         </div>
       </aside>
-    </>
+    
   );
 }
 

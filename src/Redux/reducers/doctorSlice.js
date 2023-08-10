@@ -3,17 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
     name:"doctorToken",
     initialState:{
         accessToken: null,
-        refreshToken: null,
+       
     },
     reducers:{
         accessToken(state,action){
-            
-            return action.payload
-        },
-        refreshToken(state,action){
-            return action.payload        }
+            console.log(action.payload,"token in redux");
+            state.accessToken = action.payload;
+           
+        }
+       
     }
  })
  export const {accessToken} = doctorSlice.actions;
- export const {refreshToken} = doctorSlice.actions;
+
+ 
  export default doctorSlice.reducer;

@@ -3,8 +3,8 @@
 import doctorSlice from "./reducers/doctorSlice";
   const store = configureStore({
     reducer:{
-        patientdata:patientSlice,
-        doctorData:doctorSlice
+        patientToken:patientSlice,
+        doctorToken:doctorSlice
     }
   })
   export default store
