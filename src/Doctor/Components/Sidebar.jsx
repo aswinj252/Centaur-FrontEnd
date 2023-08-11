@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { useSelector } from "react-redux";
- import {accessToken } from "../../Redux/reducers/doctorSlice";
+ 
 
 const navLinkStyle = ({ isActive }) => {
   return {
