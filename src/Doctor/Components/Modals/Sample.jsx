@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "../../utils/axios";
 
+
 export default function Sample({ onClose }) {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -30,9 +31,18 @@ export default function Sample({ onClose }) {
     console.log(slots,selectedEndingTime,selectedStartingTime,selectedDate);
        const body = JSON.stringify({selectedStartingTime,selectedEndingTime,slots,selectedDate})
        console.log(body);
-       axios.post('/addApponitment',body,{ headers: { "Content-Type": "application/json" } }).then((response)=>{
+      const token = localStorage.getItem('accessToken')
+      console.log(token,"token ");
+      axios.post('/addApponitment', body, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        withCredentials: true
+      }).then((response) => {
         console.log(response);
-       })
+      });
+      
 
     handleClose();
   };

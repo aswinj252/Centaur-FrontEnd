@@ -1,5 +1,25 @@
+import { useEffect,useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+ 
 
 function Home() {
+  const navigate = useNavigate()
+
+
+  useEffect(()=>{
+    const accessToken = localStorage.getItem("accessToken")
+    if (!accessToken) {
+      navigate("/doctor/login"); 
+    }
+    else{
+      navigate("/doctor/home")
+    }
+
+
+  },[navigate])
+
+
 
   return (
    

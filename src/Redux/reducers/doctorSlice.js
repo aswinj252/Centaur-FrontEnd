@@ -8,6 +8,7 @@ import { createSlice } from "@reduxjs/toolkit";
     reducers:{
         accessToken(state,action){
             console.log(action.payload,"token in redux");
+            localStorage.setItem("accessToken",action.payload)
             state.accessToken = action.payload;
            
         }
