@@ -16,7 +16,7 @@ function Sidebar() {
   const [dropdown2Visible, setDropdown2Visible] = useState(false);
   const [dropdown3Visible, setDropdown3Visible] = useState(false);
 
-  const token = useSelector(state => state.doctorToken.accessToken);
+  const token = useSelector(state => state.doctorData.accessToken);
  console.log(token,"token from redux");
   useEffect(() => {
     // Set initial dropdown visibility here

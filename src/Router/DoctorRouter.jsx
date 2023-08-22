@@ -7,10 +7,11 @@ import Home from "../Doctor/Components/Home";
 import Blogs from "../Doctor/Components/Blogs"
 import Profile from "../Doctor/Components/Profile";
 import VideoTIme from "../Doctor/Components/VideoTIme";
-import TIme from "../Doctor/Components/TIme";
+
 import SignupPage from "../Doctor/Pages/SignupPage";
 import PendingPage from "../Doctor/Pages/PendingPage";
 import LandingPage from "../Doctor/Pages/LandingPage";
+import TIme from "../Doctor/Components/Time";
 
 function DoctorRouter() {
   return (

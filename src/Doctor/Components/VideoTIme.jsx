@@ -1,13 +1,35 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Sample from "./Modals/Sample";
 // import VideoTimeModea from "./VideoTimeModea"
 import { useState } from "react";
+import axios from "axios";
 
 function VideoTIme() {
   const [Vmodal, SetVmodal] = useState(false);
+  const navigate = useNavigate()
 
   const onClose = () => {
     SetVmodal(false);
   };
+
+  useEffect(()=>{
+    const accessToken = localStorage.getItem("accessToken")
+    if (!accessToken) {
+      navigate("/doctor/login"); 
+
+      axios.get('/videoBookings').then((response)=>{
+        console.log(response);
+      })
+    }
+    else{
+      navigate("/doctor/home/video_time")
+    }
+
+
+  },[navigate])
+
 
   return (
     <div className="p-4 sm:ml-64">

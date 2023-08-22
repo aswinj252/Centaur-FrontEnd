@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import Cookies from 'js-cookie';
 
-import { accessToken} from "../../Redux/reducers/doctorSlice";
+import { accessToken, docId,docEmail,docName} from "../../Redux/reducers/doctorSlice";
 function  Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,6 +13,28 @@ function  Login() {
 const navigate= useNavigate()
 const dispatch = useDispatch()
 
+
+// const docDetails =(token,id)=> 
+
+
+// axios.get(`/docDetails/${id}`,{
+//   headers:{
+//      "Authorization": `Bearer ${token}`
+//   },
+//  withCredentials:true
+// }
+// ,
+// ).then((response)=>{
+//   console.log(response);
+//   console.log(response.data.docDetails
+//     .data,"data");
+//   dispatch(docEmail(response.data.docDetails
+//     .Data.email))
+//     dispatch(docName(response.data.docDetails
+//     .Data.name))
+  
+
+// })
 
 const handelSubmit=(e) =>{
   e.preventDefault();
@@ -40,10 +62,13 @@ if( response.data.status === true &&
 
     // Dispatch actions to update Redux store with tokens
      dispatch(accessToken(accessTokenn));
-    // dispatch(refreshToken(response.data.refreshToken));
+     dispatch(docId(response.data.id))
+     dispatch(docEmail(response.data.Doctor.email))
+        dispatch(docName(response.data.Doctor.name))
+  
    
-    // Example usage to access the tokens
-    
+   
+    //  docDetails(accessTokenn,response.data.id)
 
   
     navigate("/doctor/home"); 

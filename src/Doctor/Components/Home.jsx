@@ -1,19 +1,22 @@
 import { useEffect,useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { accessToken } from "../../Redux/reducers/doctorSlice";
  
 
 function Home() {
   const navigate = useNavigate()
-
+ const dispatch = useDispatch()
 
   useEffect(()=>{
-    const accessToken = localStorage.getItem("accessToken")
-    if (!accessToken) {
+    const access = localStorage.getItem("accessToken")
+    if (!access) {
       navigate("/doctor/login"); 
     }
     else{
       navigate("/doctor/home")
+    dispatch(accessToken(access))
     }
 
 

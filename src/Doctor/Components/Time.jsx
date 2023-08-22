@@ -14,6 +14,7 @@ const onClose = () =>{
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           
           <button  onClick={()=>{SetModal(true)}}>Add time </button>
+          {Modal && <TImeModal closeModal={onClose}/>}
         <section className="container px-4 mx-auto">
   <div className="flex flex-col">
     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -1017,7 +1018,7 @@ const onClose = () =>{
     </a>
   </div>
 </section>
-    {Modal&&<TImeModal closeModal={onClose}/>}
+    
         </div>
       </div>
       )

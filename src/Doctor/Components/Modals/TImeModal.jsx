@@ -1,18 +1,102 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "../../utils/axios";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function TImeModal({ closeModal }) {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedStartingTime, setselectedStartingTime] = useState(null);
+  const [selectedEndingTime,setselectedEndingTime] = useState(null)
+  const [slots,setslots] = useState('') 
+  const docId = useSelector(state => state.doctorData.docId)
+
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    const accessToken = localStorage.getItem("accessToken")
+    
+    if (!accessToken) {
+      navigate("/doctor/login"); 
+    }
+    else{
+      navigate("/doctor/home/time ")
+    }
+
+
+  },[navigate])
 
   const handleClose = () => {
     setOpen(false);
    closeModal();
   };
 
-  const handleSubmit = () => {
-    ////
-    handleClose();
+  const handleEndingTimeChange = (Etime) =>{
+    setselectedEndingTime(Etime)
+  }
+ 
+  const handleStartingTimeChange = (time) => {
+    setselectedStartingTime(time);
+  };
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+    
+      
+      const body = JSON.stringify({
+        selectedStartingTime,
+        selectedEndingTime,
+        slots,
+        selectedDate,
+        docId,
+      });
+  
+      const response = await axios.post('/addApponitment', body, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        withCredentials: true
+      });
+      console.log(response);
+  
+      if (response.data.expired === false && response.data.responsee.newAppontment) {
+        toast.success("new time added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        handleClose();
+      } else {
+        const refreshResponse = await axios.get('/refreshToken', {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true
+        });
+  
+        if (refreshResponse && refreshResponse.data&&refreshResponse.data.newToken ) {
+          console.log(refreshResponse);
+         const newToken = refreshResponse.data.newToken;
+           localStorage.setItem('accessToken', newToken);
+           await handleSubmit(); // Retry the submission with the new token
+        } else {
+          handleClose();
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -31,7 +115,7 @@ export default function TImeModal({ closeModal }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-10 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -59,15 +143,25 @@ export default function TImeModal({ closeModal }) {
                                 htmlFor="fName"
                                 className="mb-3 block text-base font-medium text-[#07074D]"
                               >
-                                First Name
+                               Starting time 
                               </label>
-                              <input
+                              {/* <input
                                 type="text"
                                 name="fName"
                                 id="fName"
                                 placeholder="First Name"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                              />
+                              /> */}
+                               <DatePicker
+      selected={selectedStartingTime}
+      onChange={ handleStartingTimeChange}
+      showTimeSelect
+      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+
+      showTimeSelectOnly
+      timeIntervals={30}
+      dateFormat="h:mm aa"
+    />
                             </div>
                           </div>
                           <div className="w-full px-3 sm:w-1/2">
@@ -76,15 +170,24 @@ export default function TImeModal({ closeModal }) {
                                 htmlFor="lName"
                                 className="mb-3 block text-base font-medium text-[#07074D]"
                               >
-                                Last Name
-                              </label>
-                              <input
+                              Ending time                              </label>
+                              {/* <input
                                 type="text"
                                 name="lName"
                                 id="lName"
                                 placeholder="Last Name"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                              />
+                              /> */}
+                               <DatePicker
+      selected={selectedEndingTime}
+      onChange={handleEndingTimeChange}
+      showTimeSelect
+      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+
+      showTimeSelectOnly
+      timeIntervals={30}
+      dateFormat="h:mm aa"
+    />
                             </div>
                           </div>
                         </div>
@@ -93,13 +196,14 @@ export default function TImeModal({ closeModal }) {
                             htmlFor="guest"
                             className="mb-3 block text-base font-medium text-[#07074D]"
                           >
-                            How many guest are you bringing?
+                            No of slots
                           </label>
                           <input
                             type="number"
                             name="guest"
                             id="guest"
-                            placeholder={5}
+                            onChange={(e)=> setslots(e.target.value)}
+                            placeholder={"no of slots"}
                             min={0}
                             className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                           />
@@ -113,15 +217,21 @@ export default function TImeModal({ closeModal }) {
                               >
                                 Date
                               </label>
-                              <input
+                              {/* <input
                                 type="date"
                                 name="date"
                                 id="date"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                              /> */}
+                              <DatePicker
+                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                selected={selectedDate}
+                                onChange={(date) => setSelectedDate(date)}
+                                minDate={new Date()}
                               />
                             </div>
                           </div>
-                          <div className="w-full px-3 sm:w-1/2">
+                          {/* <div className="w-full px-3 sm:w-1/2">
                             <div className="mb-5">
                               <label
                                 htmlFor="VideoTIme"
@@ -136,9 +246,9 @@ export default function TImeModal({ closeModal }) {
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                               />
                             </div>
-                          </div>
+                          </div> */}
                         </div>
-                        <div className="mb-5">
+                        {/* <div className="mb-5">
                           <label className="mb-3 block text-base font-medium text-[#07074D]">
                             Are you coming to the event?
                           </label>
@@ -172,7 +282,7 @@ export default function TImeModal({ closeModal }) {
                               </label>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <div>
                           <button
                             type="button"
@@ -186,6 +296,24 @@ export default function TImeModal({ closeModal }) {
                     </div>
                   </div>
                 </div>
+
+                {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <button
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    onClick={handleSubmit}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                    onClick={handleClose}
+                    ref={cancelButtonRef}
+                  >
+                    Cancel
+                  </button>
+                </div> */}
               </Dialog.Panel>
             </Transition.Child>
           </div>

@@ -1,8 +1,12 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "../../utils/axios";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+
 
 
 export default function Sample({ onClose }) {
@@ -11,8 +15,22 @@ export default function Sample({ onClose }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStartingTime, setselectedStartingTime] = useState(null);
   const [selectedEndingTime,setselectedEndingTime] = useState(null)
-  const [slots,setslots] = useState('')
+  const [slots,setslots] = useState('') 
+  const docId = useSelector(state => state.doctorData.docId)
 
+  const navigate = useNavigate()
+  useEffect(()=>{
+    const accessToken = localStorage.getItem("accessToken")
+    
+    if (!accessToken) {
+      navigate("/doctor/login"); 
+    }
+    else{
+      navigate("/doctor/home/video_time ")
+    }
+
+
+  },[navigate])
 
   const handleEndingTimeChange = (Etime) =>{
     setselectedEndingTime(Etime)
@@ -27,26 +45,92 @@ export default function Sample({ onClose }) {
     onClose();
   };
 
-  const handleSubmit = () => {
-    console.log(slots,selectedEndingTime,selectedStartingTime,selectedDate);
-       const body = JSON.stringify({selectedStartingTime,selectedEndingTime,slots,selectedDate})
-       console.log(body);
-      const token = localStorage.getItem('accessToken')
-      console.log(token,"token ");
-      axios.post('/addApponitment', body, {
+  // const handleSubmit = () => {
+  //   console.log(slots,selectedEndingTime,selectedStartingTime,selectedDate);
+  //      const body = JSON.stringify({selectedStartingTime,selectedEndingTime,slots,selectedDate})
+  //      console.log(body);
+  //     const token = localStorage.getItem('accessToken')
+  //     console.log(token,"token ");
+  //     axios.post('/addApponitment', body, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": `Bearer ${token}`
+  //       },
+  //       withCredentials: true
+  //     }).then((response) => {
+  //       console.log(response);
+  //       if (response.data.response.expired === true) {
+  //         axios.get('/refreshToken'),{headers:{
+  //           "Content-Type": "application/json",
+
+  //         }, withCredentials:true
+          
+  //       }
+  //     }
+  //     }).then((responsee)=>{
+  //       console.log(responsee);
+
+  //     });
+      
+
+  //   handleClose();
+  // };
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+    
+      
+      const body = JSON.stringify({
+        selectedStartingTime,
+        selectedEndingTime,
+        slots,
+        selectedDate,
+        docId,
+      });
+  
+      const response = await axios.post('/addApponitment', body, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
         withCredentials: true
-      }).then((response) => {
-        console.log(response);
       });
-      
-
-    handleClose();
+      console.log(response);
+  
+      if (response.data.expired === false && response.data.responsee.newAppontment) {
+        toast.success("new time added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        handleClose();
+      } else {
+        const refreshResponse = await axios.get('/refreshToken', {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true
+        });
+  
+        if (refreshResponse && refreshResponse.data&&refreshResponse.data.newToken ) {
+          console.log(refreshResponse);
+         const newToken = refreshResponse.data.newToken;
+           localStorage.setItem('accessToken', newToken);
+           await handleSubmit(); // Retry the submission with the new token
+        } else {
+          handleClose();
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
-
+  
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -109,6 +193,7 @@ export default function Sample({ onClose }) {
 
       showTimeSelectOnly
       timeIntervals={30}
+      timeCaption="Time"
       dateFormat="h:mm aa"
     />
                             </div>
