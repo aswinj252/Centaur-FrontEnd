@@ -10,7 +10,7 @@ function PendingApprovals() {
 
     useEffect(() => {
         getPendingApprovals();
-    }, [])
+    }, pending)
  
     const getPendingApprovals = () =>{
         axios.get('/pending' ).then((response) =>{

@@ -1,5 +1,22 @@
 
+import axios from "../utils/axios"
+import { useEffect,useState } from "react"
+
+
 function Doctors() {
+ const [doc,Setdoc] = useState([])
+
+  useEffect(() =>{
+   getDoctors()
+  },[])
+
+  const getDoctors = () =>{
+    axios.get('/allDoc').then((response)=>{
+      console.log(response);
+      Setdoc(response.data.ApprovedDoc.doctors)
+
+    })
+  }
   return (
     <div className="p-4 sm:ml-64">
     <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
@@ -19,53 +36,27 @@ function Doctors() {
         </p>
       </div>
       <div className="grid gap-12 items-center md:grid-cols-3">
-        <div className="space-y-4 text-center">
+
+        {
+          doc.map((obj,index)=>
+          
+        <div key={index} className="space-y-4 text-center">
           <img
             className="w-64 h-64 mx-auto object-cover rounded-xl md:w-40 md:h-40 lg:w-64 lg:h-64"
-            src="https://tailus.io/sources/blocks/classic/preview/images/woman1.jpg"
+            src={obj.picture}
             alt="woman"
             loading="lazy"
             width={640}
             height={805}
           />
           <div>
-            <h4 className="text-2xl">Hentoni Doe</h4>
-            <span className="block text-sm text-gray-500">CEO-Founder</span>
+            <h4 className="text-2xl"> Dr {obj.name}</h4>
+            <span className="block text-sm text-gray-500">{obj.department}</span>
           </div>
-          <button>dd</button>
+          <button>{obj.speciality}</button>
         </div>
-        <div className="space-y-4 text-center">
-          <img
-            className="w-64 h-64 mx-auto object-cover rounded-xl md:w-48 md:h-64 lg:w-64 lg:h-80"
-            src="https://tailus.io/sources/blocks/classic/preview/images/man.jpg"
-            alt="man"
-            loading="lazy"
-            width={1000}
-            height={667}
-          />
-          <div>
-            <h4 className="text-2xl">Jonathan Doe</h4>
-            <span className="block text-sm text-gray-500">
-              Chief Technical Officer
-            </span>
-          </div>
-        </div>
-        <div className="space-y-4 text-center">
-          <img
-            className="w-64 h-64 mx-auto object-cover rounded-xl md:w-40 md:h-40 lg:w-64 lg:h-64"
-            src="https://tailus.io/sources/blocks/classic/preview/images/woman.jpg"
-            alt="woman"
-            loading="lazy"
-            width={1000}
-            height={667}
-          />
-          <div>
-            <h4 className="text-2xl">Anabelle Doe</h4>
-            <span className="block text-sm text-gray-500">
-              Chief Operations Officer
-            </span>
-          </div>
-        </div>
+       
+       )}
       </div>
     </div>
   </div>

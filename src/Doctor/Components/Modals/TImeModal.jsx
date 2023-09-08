@@ -12,42 +12,38 @@ export default function TImeModal({ closeModal }) {
   const cancelButtonRef = useRef(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStartingTime, setselectedStartingTime] = useState(null);
-  const [selectedEndingTime,setselectedEndingTime] = useState(null)
-  const [slots,setslots] = useState('') 
-  const docId = useSelector(state => state.doctorData.docId)
+  const [selectedEndingTime, setselectedEndingTime] = useState(null);
+  const [slots, setslots] = useState("");
+  const docId = useSelector((state) => state.doctorData.docId);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    const accessToken = localStorage.getItem("accessToken")
-    
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+
     if (!accessToken) {
-      navigate("/doctor/login"); 
+      navigate("/doctor/login");
+    } else {
+      navigate("/doctor/home/time ");
     }
-    else{
-      navigate("/doctor/home/time ")
-    }
-
-
-  },[navigate])
+  }, [navigate]);
 
   const handleClose = () => {
     setOpen(false);
-   closeModal();
+    closeModal();
   };
 
-  const handleEndingTimeChange = (Etime) =>{
-    setselectedEndingTime(Etime)
-  }
- 
+  const handleEndingTimeChange = (Etime) => {
+    setselectedEndingTime(Etime);
+  };
+
   const handleStartingTimeChange = (time) => {
     setselectedStartingTime(time);
   };
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-    
-      
+      const token = localStorage.getItem("accessToken");
+
       const body = JSON.stringify({
         selectedStartingTime,
         selectedEndingTime,
@@ -55,18 +51,21 @@ export default function TImeModal({ closeModal }) {
         selectedDate,
         docId,
       });
-  
-      const response = await axios.post('/addApponitment', body, {
+
+      const response = await axios.post("/addNApponitment", body, {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        withCredentials: true
+        withCredentials: true,
       });
       console.log(response);
-  
-      if (response.data.expired === false && response.data.responsee.newAppontment) {
-        toast.success("new time added", {
+
+      if (
+        response.data.success === true &&
+        response.data.response.newAppontment
+      ) {
+        toast.success("new appontment added", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -77,19 +76,25 @@ export default function TImeModal({ closeModal }) {
           theme: "colored",
         });
         handleClose();
-      } else {
-        const refreshResponse = await axios.get('/refreshToken', {
+      } 
+      else 
+      {
+        const refreshResponse = await axios.get("/refreshToken", {
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          withCredentials: true
+          withCredentials: true,
         });
-  
-        if (refreshResponse && refreshResponse.data&&refreshResponse.data.newToken ) {
+
+        if (
+          refreshResponse &&
+          refreshResponse.data &&
+          refreshResponse.data.newToken
+        ) {
           console.log(refreshResponse);
-         const newToken = refreshResponse.data.newToken;
-           localStorage.setItem('accessToken', newToken);
-           await handleSubmit(); // Retry the submission with the new token
+          const newToken = refreshResponse.data.newToken;
+          localStorage.setItem("accessToken", newToken);
+          await handleSubmit(); // Retry the submission with the new token
         } else {
           handleClose();
         }
@@ -143,7 +148,7 @@ export default function TImeModal({ closeModal }) {
                                 htmlFor="fName"
                                 className="mb-3 block text-base font-medium text-[#07074D]"
                               >
-                               Starting time 
+                                Starting time
                               </label>
                               {/* <input
                                 type="text"
@@ -152,16 +157,15 @@ export default function TImeModal({ closeModal }) {
                                 placeholder="First Name"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                               /> */}
-                               <DatePicker
-      selected={selectedStartingTime}
-      onChange={ handleStartingTimeChange}
-      showTimeSelect
-      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-
-      showTimeSelectOnly
-      timeIntervals={30}
-      dateFormat="h:mm aa"
-    />
+                              <DatePicker
+                                selected={selectedStartingTime}
+                                onChange={handleStartingTimeChange}
+                                showTimeSelect
+                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                showTimeSelectOnly
+                                timeIntervals={30}
+                                dateFormat="h:mm aa"
+                              />
                             </div>
                           </div>
                           <div className="w-full px-3 sm:w-1/2">
@@ -170,7 +174,8 @@ export default function TImeModal({ closeModal }) {
                                 htmlFor="lName"
                                 className="mb-3 block text-base font-medium text-[#07074D]"
                               >
-                              Ending time                              </label>
+                                Ending time{" "}
+                              </label>
                               {/* <input
                                 type="text"
                                 name="lName"
@@ -178,16 +183,15 @@ export default function TImeModal({ closeModal }) {
                                 placeholder="Last Name"
                                 className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                               /> */}
-                               <DatePicker
-      selected={selectedEndingTime}
-      onChange={handleEndingTimeChange}
-      showTimeSelect
-      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-
-      showTimeSelectOnly
-      timeIntervals={30}
-      dateFormat="h:mm aa"
-    />
+                              <DatePicker
+                                selected={selectedEndingTime}
+                                onChange={handleEndingTimeChange}
+                                showTimeSelect
+                                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                showTimeSelectOnly
+                                timeIntervals={30}
+                                dateFormat="h:mm aa"
+                              />
                             </div>
                           </div>
                         </div>
@@ -202,7 +206,7 @@ export default function TImeModal({ closeModal }) {
                             type="number"
                             name="guest"
                             id="guest"
-                            onChange={(e)=> setslots(e.target.value)}
+                            onChange={(e) => setslots(e.target.value)}
                             placeholder={"no of slots"}
                             min={0}
                             className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"

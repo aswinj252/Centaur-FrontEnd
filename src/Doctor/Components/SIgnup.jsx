@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
  import axios from '../utils/axios'
@@ -9,12 +9,27 @@ function SIgnup() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [department,setDepartment ] = useState('')
     const [specification, setSpecification] = useState("");
     const [file, setFile] = useState();
     const [password, setPassword] = useState("");
+    const [dep,setDep] = useState([])
 
     
   const navigate = useNavigate();
+
+   useEffect(()=>{
+    getDepartment()
+    
+   } ,[])
+   const getDepartment = () =>{
+    axios.get('/departments').then((departnets)=>{
+      console.log(departnets);
+      setDep(departnets.data.departments.department)
+  ;
+          })
+
+   }
 
   const handleSubmit = async(e) =>{
     e.preventDefault()
@@ -27,6 +42,7 @@ function SIgnup() {
     formData.append("name", name)
     formData.append("email", email)
     formData.append("specification", specification)
+    formData.append("department",department)
     formData.append("phone", phone)
     formData.append("password", password)
     console.log(formData);
@@ -339,6 +355,7 @@ function SIgnup() {
                       />
                     </div>
                   </div>
+                  
                 </div>
                 <div className="flex -mx-3">
                   <div className="w-full px-3 mb-5">
@@ -356,6 +373,30 @@ function SIgnup() {
                         required
                         onChange={(e) => setEmail(e.target.value)}
                       />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex -mx-3">
+                  <div className="w-full px-3 mb-5">
+                    <label htmlFor="" className="text-xs font-semibold px-1">
+                      Department
+                    </label>
+                    <div className="flex">
+                      <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                        <i className="mdi mdi-email-outline text-gray-400 text-lg" />
+                      </div>
+                   
+                     <select className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                     onChange={(e) => setDepartment(e.target.value)}
+                     value={department}
+>
+{ dep?.map((obj,index)=>
+              <option key={index}>{obj.department}</option>
+
+             
+              )}
+            </select> 
+        
                     </div>
                   </div>
                 </div>

@@ -1,10 +1,23 @@
+import axios from "../utils/axios"
 import AddDepartment from "./Modals/AddDepartment"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function Departments() {
 	const [Modal,setModal] = useState(false)
-	const onClose = () =>{
+	const [ dep,SetDep] = useState([])
+	
+ 	const onClose = () =>{
 		setModal(false)
+	}
+	useEffect(()=>{
+        getAllDep();
+
+	},[Modal])
+	const getAllDep = () =>{
+		axios.get('/allDep').then ((response)=>{
+			console.log(response);
+			SetDep(response.data.department.departments)
+		})
 	}
 
    return (
@@ -29,62 +42,25 @@ function Departments() {
 			<p className="font-serif text-sm dark:text-gray-400">Qualisque erroribus usu at, duo te agam soluta mucius.</p>
 		</div>
 		<div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4">
-			<article className="flex flex-col dark:bg-gray-900">
+
+			{ dep.map((obj,index)=>
+				<  article key = {index}className="flex flex-col dark:bg-gray-900">
 				<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum">
-					<img alt="" className="object-cover w-full h-52 dark:bg-gray-500" src="https://source.unsplash.com/200x200/?fashion?1" />
+					<img alt="" className="object-cover w-full h-52 dark:bg-gray-500" src={obj.url} />
 				</a>
 				<div className="flex flex-col flex-1 p-6">
 					<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum"></a>
-					<a rel="noopener noreferrer" href="#" className="text-xs tracking-wider uppercase hover:underline dark:text-violet-400">Convenire</a>
-					<h3 className="flex-1 py-2 text-lg font-semibold leading-snug">Te nulla oportere reprimique his dolorum</h3>
+					
+					<h3 className="flex-1 py-2 text-lg font-semibold leading-snug">{obj.department}</h3>
+					<a rel="noopener noreferrer" href="#" className="text-xs tracking-wider uppercase hover:underline dark:text-violet-400">{obj.description}</a>
 					<div className="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-400">
 						<span>June 1, 2020</span>
 						<span>2.1K views</span>
 					</div>
 				</div>
 			</article>
-			<article className="flex flex-col dark:bg-gray-900">
-				<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum">
-					<img alt="" className="object-cover w-full h-52 dark:bg-gray-500" src="https://source.unsplash.com/200x200/?fashion?2" />
-				</a>
-				<div className="flex flex-col flex-1 p-6">
-					<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum"></a>
-					<a rel="noopener noreferrer" href="#" className="text-xs tracking-wider uppercase hover:underline dark:text-violet-400">Convenire</a>
-					<h3 className="flex-1 py-2 text-lg font-semibold leading-snug">Te nulla oportere reprimique his dolorum</h3>
-					<div className="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-400">
-						<span>June 2, 2020</span>
-						<span>2.2K views</span>
-					</div>
-				</div>
-			</article>
-			<article className="flex flex-col dark:bg-gray-900">
-				<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum">
-					<img alt="" className="object-cover w-full h-52 dark:bg-gray-500" src="https://source.unsplash.com/200x200/?fashion?3" />
-				</a>
-				<div className="flex flex-col flex-1 p-6">
-					<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum"></a>
-					<a rel="noopener noreferrer" href="#" className="text-xs tracking-wider uppercase hover:underline dark:text-violet-400">Convenire</a>
-					<h3 className="flex-1 py-2 text-lg font-semibold leading-snug">Te nulla oportere reprimique his dolorum</h3>
-					<div className="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-400">
-						<span>June 3, 2020</span>
-						<span>2.3K views</span>
-					</div>
-				</div>
-			</article>
-			<article className="flex flex-col dark:bg-gray-900">
-				<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum">
-					<img alt="" className="object-cover w-full h-52 dark:bg-gray-500" src="https://source.unsplash.com/200x200/?fashion?4" />
-				</a>
-				<div className="flex flex-col flex-1 p-6">
-					<a rel="noopener noreferrer" href="#" aria-label="Te nulla oportere reprimique his dolorum"></a>
-					<a rel="noopener noreferrer" href="#" className="text-xs tracking-wider uppercase hover:underline dark:text-violet-400">Convenire</a>
-					<h3 className="flex-1 py-2 text-lg font-semibold leading-snug">Te nulla oportere reprimique his dolorum</h3>
-					<div className="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-400">
-						<span>June 4, 2020</span>
-						<span>2.4K views</span>
-					</div>
-				</div>
-			</article>
+		)}
+			
 		</div>
 	</div>
 </section>

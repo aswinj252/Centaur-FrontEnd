@@ -1,5 +1,5 @@
-import { useEffect,useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { accessToken } from "../../Redux/reducers/doctorSlice";
@@ -20,7 +20,7 @@ function Home() {
     }
 
 
-  },[navigate])
+  },[navigate,dispatch])
 
 
 

@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 
 
 
+
 export default function Sample({ onClose }) {
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -16,10 +17,12 @@ export default function Sample({ onClose }) {
   const [selectedStartingTime, setselectedStartingTime] = useState(null);
   const [selectedEndingTime,setselectedEndingTime] = useState(null)
   const [slots,setslots] = useState('') 
-  const docId = useSelector(state => state.doctorData.docId)
+   const docid = useSelector(state => state.doctorData.docId)
+ 
 
   const navigate = useNavigate()
   useEffect(()=>{
+   
     const accessToken = localStorage.getItem("accessToken")
     
     if (!accessToken) {
@@ -44,50 +47,42 @@ export default function Sample({ onClose }) {
     setOpen(false);
     onClose();
   };
+ 
+const refreshToken = async () => {
+  try {
+    const refreshResponse = await axios.get('/refreshToken', {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      withCredentials: true
+    });
 
-  // const handleSubmit = () => {
-  //   console.log(slots,selectedEndingTime,selectedStartingTime,selectedDate);
-  //      const body = JSON.stringify({selectedStartingTime,selectedEndingTime,slots,selectedDate})
-  //      console.log(body);
-  //     const token = localStorage.getItem('accessToken')
-  //     console.log(token,"token ");
-  //     axios.post('/addApponitment', body, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Authorization": `Bearer ${token}`
-  //       },
-  //       withCredentials: true
-  //     }).then((response) => {
-  //       console.log(response);
-  //       if (response.data.response.expired === true) {
-  //         axios.get('/refreshToken'),{headers:{
-  //           "Content-Type": "application/json",
-
-  //         }, withCredentials:true
-          
-  //       }
-  //     }
-  //     }).then((responsee)=>{
-  //       console.log(responsee);
-
-  //     });
-      
-
-  //   handleClose();
-  // };
-  const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-    
-      
+    if (refreshResponse.data && refreshResponse.data.newToken) {
+      console.log(refreshResponse);
+      const newToken = refreshResponse.data.newToken;
+      localStorage.setItem('accessToken', newToken);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    return false;
+  }
+};
+  
+const handleSubmit = async () => {
+  try {
+    const token = localStorage.getItem('accessToken');
+  
       const body = JSON.stringify({
         selectedStartingTime,
         selectedEndingTime,
         slots,
         selectedDate,
-        docId,
+        docid,
       });
-  
+
       const response = await axios.post('/addApponitment', body, {
         headers: {
           "Content-Type": "application/json",
@@ -95,8 +90,9 @@ export default function Sample({ onClose }) {
         },
         withCredentials: true
       });
+
       console.log(response);
-  
+
       if (response.data.expired === false && response.data.responsee.newAppontment) {
         toast.success("new time added", {
           position: "top-right",
@@ -109,27 +105,21 @@ export default function Sample({ onClose }) {
           theme: "colored",
         });
         handleClose();
-      } else {
-        const refreshResponse = await axios.get('/refreshToken', {
-          headers: {
-            "Content-Type": "application/json"
-          },
-          withCredentials: true
-        });
-  
-        if (refreshResponse && refreshResponse.data&&refreshResponse.data.newToken ) {
-          console.log(refreshResponse);
-         const newToken = refreshResponse.data.newToken;
-           localStorage.setItem('accessToken', newToken);
-           await handleSubmit(); // Retry the submission with the new token
+      } else if(response.data.expired === true ) {
+        const refreshSuccess = await refreshToken();
+        if (refreshSuccess) {
+          await handleSubmit();
         } else {
-          handleClose();
+          console.log("session expired");
         }
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+    
+    
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
   
   return (
     <Transition.Root show={open} as={Fragment}>

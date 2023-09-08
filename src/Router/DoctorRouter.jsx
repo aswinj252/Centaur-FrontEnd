@@ -12,6 +12,7 @@ import SignupPage from "../Doctor/Pages/SignupPage";
 import PendingPage from "../Doctor/Pages/PendingPage";
 import LandingPage from "../Doctor/Pages/LandingPage";
 import TIme from "../Doctor/Components/Time";
+import EditDetails from "../Doctor/Components/EditDetails";
 
 function DoctorRouter() {
   return (
@@ -30,6 +31,7 @@ function DoctorRouter() {
           <Route path="profile" element={<Profile/>} />
           <Route path="video_time" element={<VideoTIme/>} />
           <Route path="time" element={<TIme/>} />
+          <Route path ="edit" element={<EditDetails/>}/>
 
         </Route>
       </Routes>

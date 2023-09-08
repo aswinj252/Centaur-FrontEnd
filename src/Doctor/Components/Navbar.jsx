@@ -1,13 +1,13 @@
 
-import  { useState, useEffect } from "react";
+import  { useState,  } from "react";
 import { Link } from "react-router-dom";
-import axios from "../utils/axios";
-import { useDispatch, useSelector } from "react-redux";
-import { docEmail, docName} from "../../Redux/reducers/doctorSlice";
+
+import {  useSelector } from "react-redux";
+
 
 function Navbar() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-   const dispatch =useDispatch()
+  
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
