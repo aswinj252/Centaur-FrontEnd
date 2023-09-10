@@ -1,9 +1,31 @@
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import VidBookModal from "./Modals/VidBookModal";
+import { useParams } from 'react-router-dom';
+import axios from "../utils/axios";
 
 
 function SingleDoc() {
+  const [name,setName] = useState(null)
+  const [specialization,setSpecialization] = useState(null)
+  const [picture,setPicture] = useState(null)
+
+  const { id } = useParams();
+  useEffect(()=>{
+    getDetails()
+    
+  },[])
+  const getDetails = () =>{
+    axios.get(`/docDetails/${id}`).then((response)=>{
+      console.log(response);
+      setName(response.data.Details.details.name)
+      setPicture(response.data.Details.details.picture)
+      setSpecialization(response.data.Details.details.speciality)
+    })
+
+  }
+
+  console.log(id,"haiii");
 const [Vmodal,SetVmodal] = useState(false)
 
 const onClose = () => {
@@ -54,9 +76,9 @@ return (
       {Vmodal && <VidBookModal onClose={onClose}   />}
       <div className="mt-20 text-center border-b pb-12">
         <h1 className="text-4xl font-medium text-gray-700">
-          Jessica Jones, <span className="font-light text-gray-500">27</span>
+         Dr {name}, <span className="font-light text-gray-500">27</span>
         </h1>
-        <p className="font-light text-gray-600 mt-3">Bucharest, Romania</p>
+        <p className="font-light text-gray-600 mt-3">{specialization}</p>
         <p className="mt-8 text-gray-500">
           Solution Manager - Creative Tim Officer
         </p>

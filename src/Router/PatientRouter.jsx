@@ -15,7 +15,7 @@ function PatientRouter() {
         <Route path="signup" element={<SIgnup/>}/>
         <Route path="Alldoc" element={<AllDoctor/>}/>
         <Route path="Alldep" element={<AllDepartments/>}/>
-        <Route path="singledoc" element={<DocDetails/>}/>
+        <Route path="singledoc/:id" element={<DocDetails/>}/>
 
 
     </Routes>
