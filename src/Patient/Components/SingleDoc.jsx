@@ -3,6 +3,7 @@ import { useState,useEffect } from "react"
 import VidBookModal from "./Modals/VidBookModal";
 import { useParams } from 'react-router-dom';
 import axios from "../utils/axios";
+import { Link } from "react-router-dom";
 
 
 function SingleDoc() {
@@ -26,11 +27,11 @@ function SingleDoc() {
   }
 
   console.log(id,"haiii");
-const [Vmodal,SetVmodal] = useState(false)
+// const [Vmodal,SetVmodal] = useState(false)
 
-const onClose = () => {
-  SetVmodal(false);
-};
+// const onClose = () => {
+//   SetVmodal(false);
+// };
 
 return (
     <div className="bg-white p-16">
@@ -61,19 +62,17 @@ return (
           </div>
         </div>
         <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-          <button 
-          onClick={() => {
-            SetVmodal(true);
-          }} className="text-white py-2 px-4  rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-            Video Apointment
-          </button>
+          <Link className="text-white py-2 px-4  rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5" to={`/videoBookingpage/${id}`}> Video Apointment</Link>
+         
+           
+         
           <button className="text-white py-2 px-4 rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
             Book Appointment
           </button>
         </div>
       </div>
 
-      {Vmodal && <VidBookModal onClose={onClose}   />}
+      {/* {Vmodal && <VidBookModal onClose={onClose}   />} */}
       <div className="mt-20 text-center border-b pb-12">
         <h1 className="text-4xl font-medium text-gray-700">
          Dr {name}, <span className="font-light text-gray-500">27</span>
