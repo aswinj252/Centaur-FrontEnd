@@ -8,7 +8,7 @@ import doctorSlice from "./reducers/doctorSlice";
 
 // Create configuration for patient slice persistence
 const patientPersistConfig = {
-  key: 'patientToken', // Key for storing patientToken in storage
+  key: 'PatientData', // Key for storing patientToken in storage
   storage,
 };
 
@@ -25,7 +25,7 @@ const persistedDoctorReducer = persistReducer(doctorPersistConfig, doctorSlice);
 
   const store = configureStore({
     reducer:{
-        patientToken:persistedPatientReducer,
+      PatientData:persistedPatientReducer,
         doctorData:persistedDoctorReducer
     }
   })

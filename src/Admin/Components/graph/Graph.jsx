@@ -1,5 +1,5 @@
 
-import "./graph.CSS"
+import "./graph.css"
 
 
  function Graph() {

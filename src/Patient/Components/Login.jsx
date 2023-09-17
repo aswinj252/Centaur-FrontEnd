@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import{accessToken,name,patinetId} from '../../Redux/reducers/patientSlice'
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,7 +17,7 @@ function Login() {
     console.log(body);
 
     axios
-      .post("/login", body, { headers: { "Content-Type": "application/json" } })
+      .post("/login", body, { headers: { "Content-Type": "application/json" },withCredentials: true })
       .then((response) => {
         console.log(response);
 
@@ -32,7 +35,9 @@ function Login() {
             progress: undefined,
             theme: "colored",
           });
-
+          dispatch(accessToken(response.data.response.accessToken))
+          dispatch(patinetId(response.data.response.User._id))
+          dispatch(name(response.data.response.User.name))
           navigate("/");
         } else if (
           response.data.response.status === false &&

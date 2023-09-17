@@ -12,6 +12,7 @@ function SingleDoc() {
   const [picture,setPicture] = useState(null)
 
   const { id } = useParams();
+  
   useEffect(()=>{
     getDetails()
     
