@@ -6,20 +6,24 @@ import 'react-datepicker/dist/react-datepicker.css';
 import axios from '../utils/axios';
 import { useParams,useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
-import { useSelector } from 'react-redux';
-
+import { useSelector,useDispatch } from 'react-redux';
+import {setBookingDetails} from "../../Redux/reducers/patientSlice"
 
 
 
 
 function VideoBookingPage() {
   const { id } = useParams();
+  const dispatch = useDispatch()
+
+
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTime,setappointmentTime ] = useState (null)
     const [ selectedTime,setSelectedTime] = useState(null)
     const [docDetails,setdocDetails] = useState({})
     const [timeDetails,setTimeDetails] = useState({})
     const navigate = useNavigate()
+    
     const PatietnId = useSelector(state => state.PatientData.patinetId);
 
      const token= localStorage.getItem('PatientaccessToken')
@@ -42,7 +46,6 @@ function VideoBookingPage() {
     
   }, []); 
 
-
   const handleButtonClick = (obj) => {
     if (obj.booked !== "true") {
       console.log(obj,"obj");
@@ -52,9 +55,15 @@ function VideoBookingPage() {
     
   };
   const handleSubmit =() =>{
-    // const time= timeDetails._id
-    // console.log(time,PatietnId,"jhiiajjdlkf");
-    // const body = JSON.stringify({time,PatietnId})
+    const time= timeDetails._id
+    const name = docDetails.name
+    console.log(time,PatietnId,id,"jhiiajjdlkf");
+    const body = JSON.stringify({id,name})
+    const newBookingDetails = {
+      patientId:PatietnId,
+      dateId: time,
+      docId: id,
+    };
     // console.log(body);
     // axios.post('/book_appointment' ,body,{headers:{
     //   "Content-Type": "application/json",
@@ -64,12 +73,16 @@ function VideoBookingPage() {
     // }).then((response) =>{
     //   console.log(response);
     // })
-    
-  axios.post("/create-checkout-session", { headers: { "Content-Type": "application/json" }}).then((response)=>{
-    console.log(response);
-    const redirectUrl = response.data.Intent;
-    window.location.href = redirectUrl;
 
+    
+    
+  axios.post("/create-checkout-session",body, { headers: { "Content-Type": "application/json" }}).then((response)=>{
+    console.log(response);
+
+
+    const redirectUrl = response.data.Intent;
+    window.location.replace(redirectUrl);
+     dispatch(setBookingDetails(newBookingDetails));
   })
 
 
@@ -78,20 +91,26 @@ function VideoBookingPage() {
     const handleDateChange = (date) => {
       console.log(date);
       setSelectedDate(date);
+     
+      
 
       
 
-       console.log(selectedDate,"haii");
-        const initialDateString = date
-        const initialDate = new Date(initialDateString);
-        const utcDate = new Date(initialDate.toUTCString());
-        const convertedDate = utcDate.toISOString();
+       console.log(date,"haii");
+//         const initialDateString = date
+//         const initialDate = new Date(initialDateString);
+//         const utcDate = new Date(initialDate.toUTCString());
+//         const convertedDate = utcDate.toISOString();
         
-console.log(convertedDate); // 
+// console.log(convertedDate); // 
        
         
        
-        axios.get('/video_appointment', { params: {id,convertedDate} })
+        axios.get('/video_appointment', { params: {
+          id: id,
+          date: date
+        }
+      })
         .then((response) => {
           console.log(response);
           if (response.data.noAppointment === true) {
@@ -153,7 +172,7 @@ console.log(convertedDate); //
         <h1 className="flex-auto text-xl font-semibold dark:text-gray-50">Dr {" "}
  {docDetails.name}       </h1>
         <div className="text-xl font-semibold text-gray-500 dark:text-gray-300">
-          $110.00
+        ₹600
         </div>
         <div className="flex-none w-full mt-2 text-sm font-medium text-gray-500 dark:text-gray-300">
           {docDetails.speciality}

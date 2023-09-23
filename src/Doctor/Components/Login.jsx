@@ -1,26 +1,24 @@
 import axios from "../utils/axios"
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-
-
+import { useFormik } from "formik";
 import { accessToken, docId,docEmail,docName} from "../../Redux/reducers/doctorSlice";
+import { loginSchema } from "../Schemas";
+const initialValues ={
+  email:"",
+  password:""
+}
 function  Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
- 
-const navigate= useNavigate()
-const dispatch = useDispatch()
 
 
+ const{values,errors,handleBlur,touched,handleChange,handleSubmit} = useFormik({
+  initialValues: initialValues,
+  validationSchema:loginSchema,
+  onSubmit : (values) =>{
 
-const handelSubmit=(e) =>{
-  e.preventDefault();
-  const body = JSON.stringify({ email, password });
-  console.log(body);
-
-axios.post('/login',body,{ headers: { "Content-Type": "application/json" },withCredentials: true }).then((response) =>{
+    
+axios.post('/login',values,{ headers: { "Content-Type": "application/json" },withCredentials: true }).then((response) =>{
   console.log(response);
 if( response.data.status === true &&
   response.data.auth === true){
@@ -94,7 +92,19 @@ if( response.data.status === true &&
     }
 })
 
-}
+
+   
+  }
+})
+
+
+
+ 
+const navigate= useNavigate()
+const dispatch = useDispatch()
+
+
+
 
 
   return (
@@ -118,31 +128,36 @@ if( response.data.status === true &&
           <h1 className="text-xl md:text-2xl font-bold leading-tight mt-12">
             Log in to your account
           </h1>
-          <form className="mt-6" onSubmit={handelSubmit}>
+          <form className="mt-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-gray-700">Email Address</label>
               <input
                 type="email"
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={handleChange}
+              onBlur={handleBlur}
                 placeholder="Enter Email Address"
                 className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                // autofocus=""
-                autoComplete=""
-                required
+                value={values.email}
+                name="email"
               />
+               { errors.email && touched.email?  <p className="form-errors text-red-800 font-bold	 "> {errors.email}</p> :null}
             </div>
             <div className="mt-4">
               <label className="block text-gray-700">Password</label>
               <input
                 type="password"
-               required
-               onChange={(e)=>setPassword(e.target.value)}
+               name="password"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
                 placeholder="Enter Password"
                 minLength={6}
                 className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500
             focus:bg-white focus:outline-none"
                 
               />
+                          { errors.password&&touched.password ?  <p className="form-errors text-red-800 font-bold	 "> {errors.password}</p> : null}
+
             </div>
             <div className="text-right mt-2">
               <a
