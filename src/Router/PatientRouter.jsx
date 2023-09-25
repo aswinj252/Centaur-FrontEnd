@@ -12,6 +12,7 @@ import Profile from "../Patient/Components/Profile"
 import Success from "../Patient/Components/Success"
 import ProfilePage from "../Patient/Pages/ProfilePage"
 import MyBookings from "../Patient/Components/MyBookings"
+import Verify from "../Patient/Components/Verify"
 
 function PatientRouter() {
   return (
@@ -24,6 +25,7 @@ function PatientRouter() {
         <Route path="Alldep" element={<AllDepartments/>}/>
         <Route path="singledoc/:id" element={<DocDetails/>}/>
         <Route path="/videoBookingpage/:id" element={<VideoAppointment/>}/>
+        <Route path="/verify/:token" element= {<Verify/>} />
         
         <Route path="success" element ={<Success/>} />
         <Route path="profile" element={<ProfilePage/>}>
