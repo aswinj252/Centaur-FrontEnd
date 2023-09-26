@@ -24,7 +24,7 @@ function Signup() {
         console.log(response, "response");
 
         if (response.data.response.status === true) {
-          toast.success("Account Created ", {
+          toast.success("Signup successfull . A verification email is sent to your email please verify email to login ", {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
